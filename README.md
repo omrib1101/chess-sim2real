@@ -11,8 +11,8 @@ The project examines:
 - Fine-tuning using a small amount of real data
 - Joint training on synthetic and real data
 
-The final output of the system is a **full chessboard state**, represented as a **FEN string**,
-reconstructed from per-square classifications.
+The final output of the system is a **chessboard image  state** and **FEN string**,
+reconstructed from per-square classifications. 
 
 ---
 
@@ -22,7 +22,7 @@ reconstructed from per-square classifications.
 - Measure the domain gap between synthetic and real chessboard images
 - Evaluate sim-to-real transfer effectiveness
 - Compare zero-shot, fine-tuned, and combined training setups
-- Produce a full board-state (FEN) prediction from a single static image
+- Produce a full board-state (FEN) prediction and a chessboard image from a single static image
 
 ---
 
