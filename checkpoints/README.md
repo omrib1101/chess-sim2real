@@ -1,6 +1,12 @@
 # Model Checkpoints
 
-This directory contains pretrained model checkpoints used for inference.
+Pretrained model checkpoints are **not stored directly in this repository** due to file
+size limitations.
+
+The pretrained models used in this project are available under the **GitHub Releases**
+section of this repository.
+
+---
 
 ## Available Models
 
@@ -12,6 +18,6 @@ This directory contains pretrained model checkpoints used for inference.
 - Training setup: synthetic pretraining followed by fine-tuning on a small real dataset
 - Purpose: improved generalization to real chessboard images
 
-### `combined_model.pth`
+### `combined.pth`
 - Training setup: training on a combination of synthetic and real data
-- Purpose: final model used for inference.
+- Purpose: final model used for inference (default)
