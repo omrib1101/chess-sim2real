@@ -27,8 +27,8 @@ class ChessMultiTaskModel(nn.Module):
 # ==========================================
 # 2. CONFIGURATION & GLOBAL INITIALIZATION
 # ==========================================
-# PLACEHOLDER: Update this to your weight file path in your Git structure
-MODEL_WEIGHTS_PATH = "models/chess_multitask_combine.pth"
+# Relative path to the model
+MODEL_WEIGHTS_PATH = "checkpoints/combined.pth"
 
 # Mapping:
 # White: P=0, N=1, B=2, R=3, Q=4, K=5 | Black: p=6, n=7, b=8, r=9, q=10, k=11 | Empty: 12
@@ -151,4 +151,5 @@ def predict_board(image: np.ndarray) -> torch.Tensor:
                     board_matrix[r, c] = piece_val
 
     # Ensure output is a torch.Tensor as requested
+
     return torch.from_numpy(board_matrix)
