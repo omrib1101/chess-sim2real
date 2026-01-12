@@ -91,4 +91,5 @@ if __name__ == "__main__":
     if os.path.exists(SRC_DIR):
         process_entire_folder(SRC_DIR, OUT_DIR, VIEW)
     else:
+
         print("Source folder not found.")
