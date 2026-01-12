@@ -112,16 +112,46 @@ python models/train_combined.py
 
 ## Demo / Inference
 
+The demo script supports running inference with different pretrained models.
+To explicitly select a different model, use the --model argument.
+
+Available pretrained models:
+-checkpoints/zero_shot.pth – trained on synthetic data only (zero-shot setup)
+-checkpoints/fine_tuned.pth – synthetic pretraining followed by fine-tuning on a small real dataset
+-checkpoints/combined.pth – training on combined synthetic and real data
+
+Examples:
+Run inference using the zero-shot model:
 ```bash
 python demo.py \
-  --model checkpoints/combined.pth \
-  --image path/to/image.jpg
+  --model zero_shot.pth \
+  --input path/to/image_or_folder \
+  --output_dir results/
 ```
+
+Run inference using the fine-tuned model:
+```bash
+python demo.py \
+  --model fine_tuned.pth \
+  --input path/to/image_or_folder \
+  --output_dir results/
+```
+
+Run inference using the combined model:
+```bash
+python demo.py \
+  --model combined.pth \
+  --input path/to/image_or_folder \
+  --output_dir results/
+```
+
 
 ---
 
 ## Reproducing Results
 
-To reproduce the reported results, use the provided pretrained model
-(`checkpoints/combined.pth`) and run the demo script as described above.
-                
+The training datasets (synthetic and real chessboard images) are not included in this
+repository due to size constraints and course data distribution policies.
+
+To reproduce the reported results, use the provided pretrained model checkpoints and
+run the demo script on any chessboard image.
