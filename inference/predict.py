@@ -44,7 +44,7 @@ def _get_model():
     global _GLOBAL_MODEL
     if _GLOBAL_MODEL is None:
         _GLOBAL_MODEL = ChessMultiTaskModel().to(DEVICE)
-        _GLOBAL_MODEL.load_state_dict(torch.load(MODEL_WEIGHTS_PATH, map_location=DEVICE))
+        _GLOBAL_MODEL.load_state_dict(torch.load(MODEL_WEIGHTS_PATH, map_location=DEVICE, weights_only=False))
         _GLOBAL_MODEL.eval()
     return _GLOBAL_MODEL
 
@@ -153,3 +153,4 @@ def predict_board(image: np.ndarray) -> torch.Tensor:
     # Ensure output is a torch.Tensor as requested
 
     return torch.from_numpy(board_matrix)
+
