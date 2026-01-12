@@ -120,9 +120,10 @@ The demo supports running inference on:
 - A single chessboard image
 - A directory of images
 
-Examples:
+Note: Initial run includes an automatic download of the pre-trained model weights (~44MB) from GitHub Releases. 
+The process may take a few seconds, but subsequent runs will use the locally cached file in the /checkpoints directory.
 
-Run inference on a single image:
+Run inference on a single image/directory of images, and save the result/s in an output directory:
 ```bash
 python demo.py --input path_to_image_or_folder --output_dir path_to_output_dir
 ```
