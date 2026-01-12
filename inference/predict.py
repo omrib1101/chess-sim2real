@@ -4,6 +4,8 @@ from torchvision import models, transforms
 from PIL import Image
 import numpy as np
 import cv2
+import os
+import urllib.request
 
 # ==========================================
 # 1. MODEL ARCHITECTURE
@@ -28,7 +30,8 @@ class ChessMultiTaskModel(nn.Module):
 # 2. CONFIGURATION & GLOBAL INITIALIZATION
 # ==========================================
 # Relative path to the model
-MODEL_WEIGHTS_PATH = "checkpoints/combined.pth"
+current_dir = os.path.dirname(os.path.abspath(__file__))
+MODEL_WEIGHTS_PATH = os.path.normpath(os.path.join(current_dir, "..", "checkpoints", "combined.pth"))
 
 # Mapping:
 # White: P=0, N=1, B=2, R=3, Q=4, K=5 | Black: p=6, n=7, b=8, r=9, q=10, k=11 | Empty: 12
@@ -40,12 +43,50 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # Load model globally to avoid repeated overhead in demo.py
 _GLOBAL_MODEL = None
 
+def ensure_model_exists():
+    """
+    Checks if the model weights file exists locally. 
+    If not, downloads it from the specified GitHub Release URL.
+    """
+    if not os.path.exists(MODEL_WEIGHTS_PATH):
+        print(f"Weights not found at {MODEL_WEIGHTS_PATH}. Downloading from GitHub Release...")
+        
+        # IMPORTANT: Replace this URL with your actual GitHub Release direct link
+        url = "https://github.com/omrib1101/chess-sim2real/releases/download/v1.0/combined.pth"
+        
+        # Ensure the target directory (checkpoints/) exists
+        os.makedirs(os.path.dirname(MODEL_WEIGHTS_PATH), exist_ok=True)
+        
+        try:
+            # Download the file from the URL and save it to MODEL_WEIGHTS_PATH
+            urllib.request.urlretrieve(url, MODEL_WEIGHTS_PATH)
+            print("Download complete!")
+        except Exception as e:
+            # Raise an informative error if the download fails (e.g., no internet connection)
+            raise Exception(f"Failed to download model weights. Please check your internet connection. Error: {e}")
+
 def _get_model():
+    """
+    Singleton-pattern function to load and return the model.
+    Ensures weights are downloaded and loaded into memory only once.
+    """
     global _GLOBAL_MODEL
     if _GLOBAL_MODEL is None:
+        # Step 1: Verify the weights file is present locally
+        ensure_model_exists()
+        
+        # Step 2: Initialize the model architecture and move to the target device (CPU/GPU)
         _GLOBAL_MODEL = ChessMultiTaskModel().to(DEVICE)
-        _GLOBAL_MODEL.load_state_dict(torch.load(MODEL_WEIGHTS_PATH, map_location=DEVICE, weights_only=False))
+        
+        # Step 3: Load the state dictionary. 
+        # Note: weights_only=False is used to support models saved with full class structures 
+        # or in older PyTorch versions.
+        state_dict = torch.load(MODEL_WEIGHTS_PATH, map_location=DEVICE, weights_only=False)
+        _GLOBAL_MODEL.load_state_dict(state_dict)
+        
+        # Step 4: Set the model to evaluation mode
         _GLOBAL_MODEL.eval()
+        
     return _GLOBAL_MODEL
 
 # ==========================================
@@ -152,5 +193,6 @@ def predict_board(image: np.ndarray) -> torch.Tensor:
 
     # Ensure output is a torch.Tensor as requested
 
-    return torch.from_numpy(board_matrix)
+    return torch.from_numpy(board_matrix).to(torch.int64).cpu()
+
 
