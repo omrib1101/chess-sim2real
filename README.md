@@ -11,8 +11,8 @@ The project examines:
 - Fine-tuning using a small amount of real data
 - Joint training on synthetic and real data
 
-The final output of the system is a **chessboard image  state** and **FEN string**,
-reconstructed from per-square classifications. 
+The final output of the system is a **full chessboard state**, represented as a **FEN string**
+and a reconstructed chessboard image, obtained from per-square classifications.
 
 ---
 
@@ -35,7 +35,6 @@ reconstructed from per-square classifications.
 - `demo.py` – End-to-end inference demo.
 
 ```text
-.
 chess-sim2real/
 ├── README.md
 ├── requirements.txt
@@ -70,4 +69,59 @@ chess-sim2real/
 │   └── combined.pth    
 │
 └── data/
-    └── README.md                   
+    └── README.md
+```
+
+---
+
+## Installation
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/<your-username>/chess-sim2real.git
+cd chess-sim2real
+```
+
+### 2. Install Python dependencies
+```bash
+pip install -r requirements.txt
+```
+**Note:**  
+Synthetic data generation scripts rely on Blender's internal Python environment
+(`bpy`, `mathutils`) and are not installed via pip.
+These dependencies are **not required** for training or inference.
+
+---
+
+## Training
+The training datasets (synthetic and real chessboard images) are not included in this
+repository due to size constraints and course data distribution policies.
+Pretrained model checkpoints are provided and are sufficient for reproducing the
+reported results and running inference.
+
+For completeness, the training scripts used in this project are included below:
+
+```bash
+python models/train_zero_shot.py
+python models/train_fine_tuned.py
+python models/train_combined.py
+```
+
+---
+
+## Demo / Inference
+
+```bash
+python demo.py \
+  --model checkpoints/combined.pth \
+  --image path/to/image.jpg
+```
+
+---
+
+## Reproducing Results
+
+To reproduce the reported results, use the provided pretrained model
+(`checkpoints/combined.pth`) and run the demo script as described above.
+                
