@@ -112,35 +112,19 @@ python models/train_combined.py
 
 ## Demo / Inference
 
-The demo script supports running inference with different pretrained models.
-To explicitly select a different model, use the --model argument.
+The demo script runs inference using a **default pretrained model**
+(`checkpoints/combined.pth`), which was trained on a combination of synthetic and real data
+and achieved the best overall performance.
 
-Available pretrained models:
--checkpoints/zero_shot.pth – trained on synthetic data only (zero-shot setup)
--checkpoints/fine_tuned.pth – synthetic pretraining followed by fine-tuning on a small real dataset
--checkpoints/combined.pth – training on combined synthetic and real data
+The demo supports running inference on:
+- A single chessboard image
+- A directory of images
 
 Examples:
-Run inference using the zero-shot model:
-```bash
-python demo.py \
-  --model zero_shot.pth \
-  --input path/to/image_or_folder \
-  --output_dir results/
-```
 
-Run inference using the fine-tuned model:
+Run inference on a single image:
 ```bash
 python demo.py \
-  --model fine_tuned.pth \
-  --input path/to/image_or_folder \
-  --output_dir results/
-```
-
-Run inference using the combined model:
-```bash
-python demo.py \
-  --model combined.pth \
   --input path/to/image_or_folder \
   --output_dir results/
 ```
@@ -153,5 +137,8 @@ python demo.py \
 The training datasets (synthetic and real chessboard images) are not included in this
 repository due to size constraints and course data distribution policies.
 
-To reproduce the reported results, use the provided pretrained model checkpoints and
-run the demo script on any chessboard image.
+To reproduce the reported results, run the demo script using the default pretrained model
+(`checkpoints/combined.pth`) on any chessboard image, as described above.
+
+The demo internally uses the required evaluation API function
+`predict_board(image: np.ndarray)` without modifying its signature or output format.
