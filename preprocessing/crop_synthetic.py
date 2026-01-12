@@ -55,4 +55,5 @@ for src_folder, dst_folder in folders:
             except Exception as e:
                 print(f"Could not process {filename}: {e}")
 
+
 print("\n--- All images processed successfully ---")
