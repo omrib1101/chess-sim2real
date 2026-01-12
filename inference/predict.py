@@ -103,7 +103,7 @@ def get_three_views_from_array(img_array):
     
     h, w = img_bgr.shape[:2]
     shift = 20
-    target_color_bgr = [89, 106, 119] # The table color used in your project
+    target_color_bgr = [89, 106, 119] # Fixed padding color
 
     # 2. Overhead View (The original image)
     # We convert the original array directly to PIL
@@ -194,5 +194,6 @@ def predict_board(image: np.ndarray) -> torch.Tensor:
     # Ensure output is a torch.Tensor as requested
 
     return torch.from_numpy(board_matrix).to(torch.int64).cpu()
+
 
 
