@@ -66,6 +66,27 @@ def tensor_to_fen(board_tensor: torch.Tensor) -> str:
     
     return "/".join(fen_rows)
 
+def load_image_with_unicode(path):
+    """
+    Reads an image from a path that may contain non-ASCII characters (like Hebrew) 
+    or spaces, which standard cv2.imread cannot handle on Windows.
+    """
+    try:
+        # Use Python's built-in open() which handles Unicode paths correctly
+        with open(path, "rb") as f:
+            # Read the file content into a memory buffer
+            file_buffer = f.read()
+        
+        # Convert the buffer to a numpy array (uint8)
+        np_array = np.frombuffer(file_buffer, dtype=np.uint8)
+        
+        # Decode the image from the memory buffer
+        img = cv2.imdecode(np_array, cv2.IMREAD_COLOR)
+        return img
+    except Exception as e:
+        print(f"Error reading image {path}: {e}")
+        return None
+
 # ==========================================
 # 3. MAIN DEMO LOGIC
 # ==========================================
@@ -93,7 +114,7 @@ def main():
 
     for img_path in image_paths:
         # 1. Load image and convert to RGB array
-        img_bgr = cv2.imread(img_path)
+        img_bgr = load_image_with_unicode(img_path)
         if img_bgr is None:
             print(f"Skipping {img_path}: could not read image.")
             continue
@@ -117,4 +138,5 @@ def main():
     print("\nDemo finished successfully.")
 
 if __name__ == "__main__":
+
     main()
