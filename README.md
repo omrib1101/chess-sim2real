@@ -124,9 +124,7 @@ Examples:
 
 Run inference on a single image:
 ```bash
-python demo.py \
-  --input path/to/image_or_folder \
-  --output_dir results/
+python demo.py --input path_to_image_or_folder --output_dir path_to_output_dir
 ```
 
 
