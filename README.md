@@ -28,24 +28,46 @@ reconstructed from per-square classifications.
 
 ## Repository Structure
 
+- `blender/` – Synthetic data generation using Blender API.
+- `preprocessing/` – Image preprocessing for synthetic and real data.
+- `models/` – Training scripts for zero-shot, fine-tuned and combined models.
+- `inference/` – Board-state prediction from a single RGB image.
+- `demo.py` – End-to-end inference demo.
+
 ```text
 .
-├── data/
-│   ├── synthetic/        # Synthetic images and labels
-│   ├── real/             # Real images and labels
-│   └── splits/           # Train / validation / test splits
-├── blender/
-│   ├── chess-set.blend
-│   └── synthetic_chess.py
-├── models/
-│   ├── train.py
-│   ├── finetune.py
-│   └── evaluate.py
-├── inference/
-│   └── image_to_fen.py
-├── utils/
-│   ├── preprocessing.py
-│   ├── perspective_transform.py
-│   └── fen_utils.py
+chess-sim2real/
+├── README.md
 ├── requirements.txt
-└── README.md
+├── demo.py                      
+│
+├── blender/
+│   ├── chess_position_api_v2.py
+│   ├── data_generator_from_csv.py
+│   └── data_generator_random.py
+│
+├── preprocessing/
+│   ├── crop_synthetic.py
+│   ├── shift_and_pad.py
+│   ├── split_to_squares.py
+│   └── split_train_val.py
+│
+├── models/
+│   ├── train_zero_shot.py
+│   ├── train_fine_tuned.py
+│   └── train_combined.py
+│
+├── inference/
+│   └── predict_board.py
+│
+├── utils/
+│   └── __init__.py
+│
+├── checkpoints/
+│   ├── README.md
+│   ├── zero_shot.pth
+│   ├── fine_tuned.pth
+│   └── combined.pth    
+│
+└── data/
+    └── README.md                   
