@@ -57,7 +57,7 @@ chess-sim2real/
 │   └── train_combined.py
 │
 ├── inference/
-│   └── predict_board.py
+│   └── predict.py
 │
 ├── utils/
 │   └── __init__.py
@@ -79,15 +79,22 @@ chess-sim2real/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/<your-username>/chess-sim2real.git
+git clone https://github.com/omrib1101/chess-sim2real.git
 cd chess-sim2real
 ```
 
 ### 2. Create and activate a virtual environment
 
+On Linux / macOS:
 ```bash
 python3 -m venv venv
 source venv/bin/activate
+```
+
+On Windows:
+```bash
+python -m venv venv
+.\venv\Scripts\activate
 ```
 
 ### 3. Install Python dependencies
@@ -114,10 +121,53 @@ python models/train_zero_shot.py
 python models/train_fine_tuned.py
 python models/train_combined.py
 ```
+---
+
+## Evaluation Function (Instructor Requirements)
+
+As required for the course evaluation, the project implements a function
+`predict_board(image: np.ndarray) -> torch.Tensor`.
+
+### Function Behavior
+
+- **Input**:  
+  A single RGB image of a chessboard as a NumPy array of shape `(H, W, 3)`.
+
+
+- **Output**:  
+  A `torch.Tensor` of shape `(8, 8)` representing the predicted board state,
+  following the class encoding defined in the assignment instructions.
+
+ - **Additional Output (Visualization)**:  
+  In addition to returning the board-state tensor, the function also generates
+  a visual representation of the predicted chessboard and saves it.
+
+  The output image is saved under:
+  inference/results/
+
+
+### Function Location
+
+The function is implemented in:
+inference/predict.py
+
+
+### Example Usage
+
+```python
+import numpy as np
+from inference.predict import predict_board
+
+image = np.array(...)  # RGB image of a chessboard
+board_tensor = predict_board(image)
+```
+
+After calling the function, the predicted board images are saved under `inference/results/` with unique,
+automatically generated filenames.
 
 ---
 
-## Demo / Inference
+## Demo
 
 The demo script runs inference using a **default pretrained model**
 (`checkpoints/combined.pth`), which was trained on a combination of synthetic and real data
@@ -130,9 +180,9 @@ The demo supports running inference on:
 Note: Initial run includes an automatic download of the pre-trained model weights (~44MB) from GitHub Releases. 
 The process may take a few seconds, but subsequent runs will use the locally cached file in the /checkpoints directory.
 
-Run inference on a single image/directory of images, and save the result/s in an output directory:
+Run inference on a single image/directory of images, and save the result/s in an output directory `inference/results/`:
 ```bash
-python demo.py --input path_to_image_or_folder --output_dir path_to_output_dir
+python demo.py --input path_to_image_or_folder
 ```
 
 
