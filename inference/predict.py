@@ -252,10 +252,10 @@ def predict_board(image: np.ndarray) -> torch.Tensor:
         output_path = os.path.join(results_dir, f"prediction_{timestamp}_{milli:03d}.gif")
         
         _internal_save_to_lichess(current_fen, output_path)
-        print(f"Visualization saved to: {output_path}")
     except Exception as e:
         print(f"Auto-save failed: {e}")
 
     return result_tensor
+
 
 
