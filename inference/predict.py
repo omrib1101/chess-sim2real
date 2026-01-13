@@ -6,6 +6,9 @@ import numpy as np
 import cv2
 import os
 import urllib.request
+import requests
+from urllib.parse import quote
+import time
 
 # ==========================================
 # 1. MODEL ARCHITECTURE
@@ -133,6 +136,43 @@ def get_three_views_from_array(img_array):
 
     return views
 
+def _internal_tensor_to_fen(board_tensor: torch.Tensor) -> str:
+    """ Converts 8x8 Tensor to FEN string for Lichess """
+    mapping = {
+        0:'P', 1:'N', 2:'B', 3:'R', 4:'Q', 5:'K',
+        6:'p', 7:'n', 8:'b', 9:'r', 10:'q', 11:'k'
+    }
+    fen_rows = []
+    board = board_tensor.cpu().numpy()
+    for r in range(8):
+        empty_count = 0
+        row_str = ""
+        for c in range(8):
+            val = board[r, c]
+            if val == 12:
+                empty_count += 1
+            else:
+                if empty_count > 0:
+                    row_str += str(empty_count)
+                    empty_count = 0
+                row_str += mapping[val]
+        if empty_count > 0:
+            row_str += str(empty_count)
+        fen_rows.append(row_str)
+    return "/".join(fen_rows)
+
+def _internal_save_to_lichess(fen: str, out_path: str):
+    """ Downloads GIF from Lichess """
+    fen_for_url = fen.replace(" ", "_")
+    url = f"https://lichess1.org/export/fen.gif?fen={quote(fen_for_url, safe='/_')}&color=white"
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        with open(out_path, "wb") as f:
+            f.write(response.content)
+    except Exception as e:
+        print(f"Note: Could not save Lichess visualization: {e}")
+
 # ==========================================
 # 4. REQUIRED API FUNCTION
 # ==========================================
@@ -193,7 +233,29 @@ def predict_board(image: np.ndarray) -> torch.Tensor:
 
     # Ensure output is a torch.Tensor as requested
 
-    return torch.from_numpy(board_matrix).to(torch.int64).cpu()
+    result_tensor = torch.from_numpy(board_matrix).to(torch.int64).cpu()
+    try:
+        # Determine the results directory: inference/results/
+        current_script_dir = os.path.dirname(os.path.abspath(__file__))
+        results_dir = os.path.join(current_script_dir, "results")
+        
+        if not os.path.exists(results_dir):
+            os.makedirs(results_dir)
+            
+        # Create FEN
+        current_fen = _internal_tensor_to_fen(result_tensor)
+        
+        # Generate a unique filename using timestamp with milliseconds
+        # %f gives microseconds, we take the first 3 digits for milliseconds
+        timestamp = time.strftime("%Y%m%d_%H%M%S")
+        milli = int(time.time() * 1000) % 1000
+        output_path = os.path.join(results_dir, f"prediction_{timestamp}_{milli:03d}.gif")
+        
+        _internal_save_to_lichess(current_fen, output_path)
+        print(f"Visualization saved to: {output_path}")
+    except Exception as e:
+        print(f"Auto-save failed: {e}")
 
+    return result_tensor
 
 
