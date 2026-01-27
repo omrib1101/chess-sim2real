@@ -109,7 +109,7 @@ def multitask_loss_fn(outputs, t_empty, t_color, t_piece, criterion):
 def train_model(model, dataloaders, dataset_sizes, criterion, optimizer, scheduler, device, num_epochs=15, patience=3):
     since = time.time()
     model_wts = copy.deepcopy(model.state_dict())
-    loss = float('inf')
+    best_loss = float('inf')
     early_stop_counter = 0
 
     for epoch in range(num_epochs):
@@ -144,8 +144,8 @@ def train_model(model, dataloaders, dataset_sizes, criterion, optimizer, schedul
 
             if phase == 'validation':
                 scheduler.step(epoch_loss)
-                if epoch_loss < loss:
-                    loss = epoch_loss
+                if epoch_loss < best_loss:
+                    best_loss = epoch_loss
                     model_wts = copy.deepcopy(model.state_dict())
                     early_stop_counter = 0
                 else:
