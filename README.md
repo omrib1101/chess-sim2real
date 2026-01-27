@@ -113,11 +113,12 @@ The training datasets (synthetic and real chessboard images) are not included in
 
 ⚠️ **Mandatory for Training:** If you intend to run the training scripts yourself, **downloading the dataset is mandatory**. Specifically, ensure that the folder named **`data_for_train`** is available locally.
 
----
 
 ### 📥 Download Link
 The dataset can be found at the following link:  
 [**Project Dataset (Google Drive)**](https://drive.google.com/drive/folders/1hWOX7U0Vm4tWfmDS4phwEd8l2pf2x79k?usp=drive_link)
+
+---
 
 # Inference & Pretrained Models
 To keep the repository lightweight, pretrained model checkpoints are not stored directly in the `/checkpoints` directory. Instead, the system is designed for seamless use:
