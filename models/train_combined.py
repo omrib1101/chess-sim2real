@@ -185,7 +185,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Train combined (synthetic + real) model")
     parser.add_argument("--data_dir", required=True, help="Dataset root with train/validation")
     parser.add_argument("--init_model", default=None, help="Path to fine-tuned model (.pth). Omit to use GitHub release.")
-    parser.add_argument("--output_model", default="combined.pth", help="Output model path")
+    parser.add_argument("--output_model", default="my_combined.pth", help="Output model path")
     parser.add_argument("--epochs", type=int, default=20)
     return parser.parse_args()
 
