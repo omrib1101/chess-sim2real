@@ -10,7 +10,7 @@ import torch.optim as optim
 from torchvision import models, transforms
 from torch.utils.data import DataLoader, Dataset, WeightedRandomSampler
 from PIL import Image
-from tqdm import tqdm tqdm
+from tqdm import tqdm
 import urllib.request
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -272,7 +272,7 @@ def main():
         optimizer,
         scheduler,
         device,
-        args.epochs
+        num_epochs=args.epochs
     )
 
     torch.save(trained_model.state_dict(), args.output_model)
