@@ -109,14 +109,19 @@ These dependencies are **not required** for training or inference.
 ---
 # Data
 
-The training datasets (synthetic and real chessboard images) are not included in this
-repository due to size constraints (~300MB) and course data distribution policies.
+The training datasets (synthetic and real chessboard images) are not included in this repository due to size constraints (~300MB) and course data distribution policies. The data was provided as part of the course materials and generated using the provided Blender-based synthetic data generation pipeline.
 
-The data was provided as part of the course materials and generated using the provided
-Blender-based synthetic data generation pipeline.
+⚠️ **Mandatory for Training:** If you intend to run the training scripts yourself, **downloading the dataset is mandatory**. Specifically, ensure that the folder named **`data_for_train`** is available locally.
 
-Pretrained model checkpoints are provided and are sufficient for reproducing the reported
-results and running inference.
+### 📥 Download Link
+The dataset can be found at the following link:  
+[**Project Dataset (Google Drive)**](https://drive.google.com/drive/folders/1hWOX7U0Vm4tWfmDS4phwEd8l2pf2x79k?usp=drive_link)
+
+### Inference & Pretrained Models
+To keep the repository lightweight, pretrained model checkpoints are not stored directly in the `/checkpoints` directory. Instead, the system is designed for seamless use:
+
+* **Automatic Download:** When running the inference or demo scripts, the system will **automatically download** the best-performing weights (`combined.pth`) from the GitHub Release to your local `/checkpoints` folder.
+* **Standalone Use:** These pretrained weights are sufficient for reproducing the reported results and running board-state predictions without the need to download the full training dataset.
 
 ---
 
