@@ -133,7 +133,7 @@ Trains the initial model architecture using only synthetic data generated from B
 * **Purpose:** Establishes a baseline for generalization without seeing any real-world images.
 * **Command:**
     ```bash
-    python models/train_zero_shot.py --data_dir path/to/synthetic_data --output_model my_zero_shot.pth
+    python models/train_zero_shot.py --data_dir data_for_train/train1 --output_model my_zero_shot.pth
     ```
 
 ### 2. Fine-Tuning
@@ -142,7 +142,7 @@ Fine-tunes the **Zero-Shot** model using a small set of real chessboard images.
 * **Logic:** Automatically attempts to load `checkpoints/zero_shot.pth` as the base.
 * **Command:**
     ```bash
-    python models/train_fine_tuned.py --data_dir path/to/real_data --output_model my_fine_tuned.pth
+    python models/train_fine_tuned.py --data_dir data_for_train/train2 --output_model my_fine_tuned.pth
     ```
 
 ### 3. Combined Training
@@ -151,7 +151,7 @@ The final stage where the **Fine-Tuned** model is trained on a joint dataset of 
 * **Logic:** Automatically attempts to load `checkpoints/fine_tuned.pth` as the base.
 * **Command:**
     ```bash
-    python models/train_combined.py --data_dir path/to/combined_data --output_model my_combined.pth
+    python models/train_combined.py --data_dir data_for_train/train3 --output_model my_combined.pth
     ```
 
 ---
@@ -172,10 +172,22 @@ To prevent confusion and ensure the integrity of the evaluation, please note the
 
 | Argument | Default | Description |
 | :--- | :--- | :--- |
-| `--data_dir` | **Required** | Path to the dataset root. Must contain `train/` and `validation/` subfolders. |
+| `--data_dir` | **Required** | Path to the specific dataset folder for the current stage (see mapping below). |
 | `--init_model` | `None` | Path to a local `.pth` file to start from. If omitted, the script downloads the official base model from GitHub. |
 | `--output_model` | *(Stage dependent)* | The filename for your newly trained weights. |
 | `--epochs` | `20` | Number of training iterations. |
+
+---
+
+📁 **Note on Data Directories:** The `data_for_train` directory provided in our Google Drive contains three specific sub-datasets. Ensure that the `--data_dir` argument points to the correct folder for each training stage:
+
+* **Zero-Shot Training:** Use the `train1` folder.
+* **Fine-Tuning:** Use the `train2` folder.
+* **Combined Training:** Use the `train3` folder.
+
+Each of these folders follows the required internal structure containing `train/` and `validation/` subdirectories.
+
+---
 
 ## Evaluation Function (Instructor Requirements)
 
