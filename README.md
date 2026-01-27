@@ -109,19 +109,60 @@ These dependencies are **not required** for training or inference.
 ---
 
 ## Training
-The training datasets (synthetic and real chessboard images) are not included in this
-repository due to size constraints and course data distribution policies.
-Pretrained model checkpoints are provided and are sufficient for reproducing the
-reported results and running inference.
 
-For completeness, the training scripts used in this project are included below:
+The training pipeline is structured into three sequential stages to bridge the sim-to-real gap. Each script is designed to be standalone: if the required base model is missing from your local `/checkpoints` folder, the script will **automatically download** our official version from GitHub Releases.
 
-```bash
-python models/train_zero_shot.py
-python models/train_fine_tuned.py
-python models/train_combined.py
-```
+
+
+### 1. Zero-Shot Training
+Trains the initial model architecture using only synthetic data generated from Blender.
+* **Purpose:** Establishes a baseline for generalization without seeing any real-world images.
+* **Command:**
+    ```bash
+    python models/train_zero_shot.py --data_dir path/to/synthetic_data --output_model my_zero_shot.pth
+    ```
+
+### 2. Fine-Tuning
+Fine-tunes the **Zero-Shot** model using a small set of real chessboard images.
+* **Purpose:** Adapts synthetic features to real-world textures, lighting, and camera noise.
+* **Logic:** Automatically attempts to load `checkpoints/zero_shot.pth` as the base.
+* **Command:**
+    ```bash
+    python models/train_fine_tuned.py --data_dir path/to/real_data --output_model my_fine_tuned.pth
+    ```
+
+### 3. Combined Training
+The final stage where the **Fine-Tuned** model is trained on a joint dataset of synthetic and real images.
+* **Purpose:** Maximizes accuracy by combining the volume of synthetic data with the precision of real-world samples.
+* **Logic:** Automatically attempts to load `checkpoints/fine_tuned.pth` as the base.
+* **Command:**
+    ```bash
+    python models/train_combined.py --data_dir path/to/combined_data --output_model my_combined.pth
+    ```
+
 ---
+
+### ⚠️ Important: Managing Checkpoints
+
+To prevent confusion and ensure the integrity of the evaluation, please note the following:
+
+* **Protect the `/checkpoints` folder:** This directory is reserved for our "official" project weights (`zero_shot.pth`, `fine_tuned.pth`, `combined.pth`). 
+* **Avoid Overwriting:** We strongly recommend **not** saving your generated models into the `/checkpoints` folder. 
+* **Confusion Prevention:** If you overwrite the files in `/checkpoints`, subsequent training stages or the `demo.py` script will load **your** experimental weights instead of our official pre-trained benchmarks. 
+* **Recommendation:** Use a custom name for the `--output_model` argument (e.g., `experiment_v1.pth`) to keep your results separate.
+
+
+
+---
+
+### Training Arguments
+
+| Argument | Default | Description |
+| :--- | :--- | :--- |
+| `--data_dir` | **Required** | Path to the dataset root. Must contain `train/` and `validation/` subfolders. |
+| `--init_model` | `None` | Path to a local `.pth` file to start from. If omitted, the script downloads the official base model from GitHub. |
+| `--output_model` | *(Stage dependent)* | The filename for your newly trained weights. |
+| `--epochs` | `20` | Number of training iterations. |
 
 ## Evaluation Function (Instructor Requirements)
 
