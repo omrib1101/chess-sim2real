@@ -11,8 +11,12 @@ from torchvision import models, transforms
 from torch.utils.data import DataLoader, Dataset, WeightedRandomSampler
 from PIL import Image
 from tqdm import tqdm
+import urllib.request
 
 
+current_dir = os.path.dirname(os.path.abspath(__file__))
+# Points to checkpoints/combined.pth relative to this script
+MODEL_WEIGHTS_PATH = os.path.normpath(os.path.join(current_dir, "..", "checkpoints", "zero_shot.pth"))
 # ==========================================
 # 1. DATASET CLASS
 # ==========================================
@@ -180,12 +184,24 @@ def train_model(model, dataloaders, dataset_sizes, criterion, optimizer, schedul
 def parse_args():
     parser = argparse.ArgumentParser(description="Fine-tune chessboard square classifier")
     parser.add_argument("--data_dir", required=True, help="Dataset root with train/validation")
-    parser.add_argument("--init_model", required=True, help="Path to zero-shot model (.pth)")
+    parser.add_argument("--init_model", default=None, help="Path to local .pth model. Omit to use GitHub release.")
     parser.add_argument("--output_model", default="fine_tuned.pth", help="Output model path")
     parser.add_argument("--epochs", type=int, default=20)
     return parser.parse_args()
 
 
+def ensure_model_exists():
+    """Checks if the official weights exist locally. If not, downloads them."""
+    if not os.path.exists(MODEL_WEIGHTS_PATH):
+        print(f"Official weights not found at {MODEL_WEIGHTS_PATH}. Downloading...")
+        url = "https://github.com/omrib1101/chess-sim2real/releases/download/v1.0/zero_shot.pth"
+        os.makedirs(os.path.dirname(MODEL_WEIGHTS_PATH), exist_ok=True)
+        try:
+            urllib.request.urlretrieve(url, MODEL_WEIGHTS_PATH)
+            print("Download complete!")
+        except Exception as e:
+            raise Exception(f"Failed to download official weights: {e}")
+            
 def main():
     args = parse_args()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -217,7 +233,21 @@ def main():
     sizes = {x: len(datasets[x]) for x in ["train","validation"]}
 
     model = ChessMultiTaskModel().to(device)
-    model.load_state_dict(torch.load('zero_shot_model.pth'))
+    if args.init_model:
+        print(f"Loading custom model from: {args.init_model}")
+        load_path = args.init_model
+    else:
+        print("Using official weights from GitHub...")
+        ensure_model_exists()
+        load_path = MODEL_WEIGHTS_PATH
+
+    # Load weights (replaces your old model.load_state_dict line)
+    try:
+        state_dict = torch.load(load_path, map_location=device, weights_only=False)
+        model.load_state_dict(state_dict)
+    except Exception as e:
+        print(f"Error loading weights: {e}")
+        return
 
     for p in model.backbone.parameters():
         p.requires_grad = False
@@ -240,7 +270,7 @@ def main():
     trained_model = train_model(
         model,
         dataloaders,
-        dataset_sizes,
+        sizes,
         criterion,
         optimizer,
         scheduler,
@@ -248,7 +278,7 @@ def main():
         num_epochs=args.epochs,
     )
 
-    torch.save(trained_model.state_dict(), 'fine_tuned_model.pth')
+    torch.save(trained_model.state_dict(), args.output_model)
     print(f"Model saved to {args.output_model}")
 
 if __name__ == "__main__":
