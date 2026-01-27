@@ -170,7 +170,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Train zero-shot chessboard square classifier")
     
     parser.add_argument("--data_dir",type=str,required=True,help="Path to dataset root (expects train/ and validation/ subfolders)",)
-    parser.add_argument("--output_model",type=str,default="zero_shot.pth",help="Output path for trained model (.pth)",)
+    parser.add_argument("--output_model",type=str,default="my_zero_shot.pth",help="Output path for trained model (.pth)",)
     parser.add_argument("--epochs",type=int,default=20,help="Number of training epochs",)
     return parser.parse_args()
     
