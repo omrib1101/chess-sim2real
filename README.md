@@ -107,7 +107,7 @@ Synthetic data generation scripts rely on Blender's internal Python environment
 These dependencies are **not required** for training or inference.
 
 ---
-# Data
+## Data
 
 The training datasets (synthetic and real chessboard images) are not included in this repository due to size constraints (~300MB) and course data distribution policies. The data was provided as part of the course materials and generated using the provided Blender-based synthetic data generation pipeline.
 
@@ -120,7 +120,7 @@ The dataset can be found at the following link:
 
 ---
 
-# Inference & Pretrained Models
+## Inference & Pretrained Models
 To keep the repository lightweight, pretrained model checkpoints are not stored directly in the `/checkpoints` directory. Instead, the system is designed for seamless use:
 
 * **Automatic Download:** When running the inference or demo scripts, the system will **automatically download** the best-performing weights (`combined.pth`) from the GitHub Release to your local `/checkpoints` folder.
