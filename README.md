@@ -142,15 +142,14 @@ The final stage where the **Fine-Tuned** model is trained on a joint dataset of 
 
 ---
 
-### ⚠️ Important: Managing Checkpoints
+### ⚠️ Managing Checkpoints & The `--init_model` Argument
 
 To prevent confusion and ensure the integrity of the evaluation, please note the following:
 
-* **Protect the `/checkpoints` folder:** This directory is reserved for our "official" project weights (`zero_shot.pth`, `fine_tuned.pth`, `combined.pth`). 
-* **Avoid Overwriting:** We strongly recommend **not** saving your generated models into the `/checkpoints` folder. 
-* **Confusion Prevention:** If you overwrite the files in `/checkpoints`, subsequent training stages or the `demo.py` script will load **your** experimental weights instead of our official pre-trained benchmarks. 
-* **Recommendation:** Use a custom name for the `--output_model` argument (e.g., `experiment_v1.pth`) to keep your results separate.
-
+* **Protect the `/checkpoints` folder:** This directory is reserved for our "official" project weights (`zero_shot.pth`, `fine_tuned.pth`, `combined.pth`).
+* **Why use `--init_model`?** While our scripts automatically download official weights if the folder is empty, you should use the `--init_model` argument when you want to **chain your own training stages**. 
+    * *Example:* If you train a custom Zero-Shot model and save it as `my_zero_shot.pth`, you must pass `--init_model my_zero_shot.pth` when running the Fine-Tuning script to ensure you are building upon **your** specific results rather than our official ones.
+* **Avoid Overwriting:** We strongly recommend **not** saving your generated models back into the `/checkpoints` folder using the official names. If you overwrite the files in `/checkpoints`, the `demo.py` script will load **your** experimental weights instead of our verified benchmarks.
 
 
 ---
