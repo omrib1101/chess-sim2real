@@ -112,6 +112,7 @@ These dependencies are **not required** for training or inference.
 
 The training pipeline is structured into three sequential stages to bridge the sim-to-real gap.
 > 💡 **Dataset Prerequisite:** Before starting the training process, ensure you have downloaded the dataset from the provided Google Drive link and extracted it locally. Please refer to the [Dataset Setup](#dataset-setup) section for download links and instructions on how to organize the folders.
+
 Each script is designed to be standalone: if the required base model is missing from your local `/checkpoints` folder, the script will **automatically download** our official version from GitHub Releases.
 
 
