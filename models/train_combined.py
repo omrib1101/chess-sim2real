@@ -11,6 +11,10 @@ from torchvision import models, transforms
 from torch.utils.data import DataLoader, Dataset, WeightedRandomSampler
 from PIL import Image
 from tqdm import tqdm tqdm
+import urllib.request
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+MODEL_WEIGHTS_PATH = os.path.normpath(os.path.join(current_dir, "..", "checkpoints", "fine_tuned.pth"))
 
 # ==========================================
 # 1. DATASET CLASS
@@ -155,7 +159,7 @@ def train_model(model, dataloaders, dataset_sizes, criterion, optimizer, schedul
 
             if phase == 'validation':
                 scheduler.step(epoch_loss)
-                if epoch_loss < best_loss:
+                if epoch_loss < loss:
                     loss = epoch_loss
                     model_wts = copy.deepcopy(model.state_dict())
                     early_stop_counter = 0
@@ -180,12 +184,24 @@ def train_model(model, dataloaders, dataset_sizes, criterion, optimizer, schedul
 def parse_args():
     parser = argparse.ArgumentParser(description="Train combined (synthetic + real) model")
     parser.add_argument("--data_dir", required=True, help="Dataset root with train/validation")
-    parser.add_argument("--init_model", required=True, help="Path to fine-tuned model (.pth)")
+    parser.add_argument("--init_model", default=None, help="Path to fine-tuned model (.pth). Omit to use GitHub release.")
     parser.add_argument("--output_model", default="combined.pth", help="Output model path")
     parser.add_argument("--epochs", type=int, default=20)
     return parser.parse_args()
 
 
+def ensure_model_exists():
+    """Checks if the fine-tuned weights exist locally. If not, downloads them."""
+    if not os.path.exists(MODEL_WEIGHTS_PATH):
+        print(f"Fine-tuned weights not found at {MODEL_WEIGHTS_PATH}. Downloading...")
+        url = "https://github.com/omrib1101/chess-sim2real/releases/download/v1.0/fine_tuned.pth"
+        os.makedirs(os.path.dirname(MODEL_WEIGHTS_PATH), exist_ok=True)
+        try:
+            urllib.request.urlretrieve(url, MODEL_WEIGHTS_PATH)
+            print("Download complete!")
+        except Exception as e:
+            raise Exception(f"Failed to download official fine-tuned weights: {e}")
+            
 def main():
     args = parse_args()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -217,7 +233,22 @@ def main():
     sizes = {x: len(datasets[x]) for x in ["train","validation"]}
 
     model = ChessMultiTaskModel().to(device)
-    model.load_state_dict(torch.load(args.init_model, map_location=device))
+    
+    if args.init_model:
+        print(f"Loading custom fine-tuned model from: {args.init_model}")
+        load_path = args.init_model
+    else:
+        print("Using official fine-tuned weights from GitHub release...")
+        ensure_model_exists()
+        load_path = MODEL_WEIGHTS_PATH
+
+    try:
+        state_dict = torch.load(load_path, map_location=device, weights_only=False)
+        model.load_state_dict(state_dict)
+        print(f"Successfully loaded weights from {load_path}")
+    except Exception as e:
+        print(f"Error loading weights: {e}")
+        return
 
     for param in model.backbone.parameters(): 
         param.requires_grad = True
