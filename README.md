@@ -118,6 +118,7 @@ Blender-based synthetic data generation pipeline.
 Pretrained model checkpoints are provided and are sufficient for reproducing the reported
 results and running inference.
 
+---
 
 ## Training
 
@@ -154,7 +155,7 @@ The final stage where the **Fine-Tuned** model is trained on a joint dataset of 
     python models/train_combined.py --data_dir data_for_train/train3 --output_model my_combined.pth
     ```
 
----
+
 
 ### ⚠️ Managing Checkpoints & The `--init_model` Argument
 
@@ -166,7 +167,7 @@ To prevent confusion and ensure the integrity of the evaluation, please note the
 * **Avoid Overwriting:** We strongly recommend **not** saving your generated models back into the `/checkpoints` folder using the official names. If you overwrite the files in `/checkpoints`, the `demo.py` script will load **your** experimental weights instead of our verified benchmarks.
 
 
----
+
 
 ### Training Arguments
 
@@ -177,7 +178,7 @@ To prevent confusion and ensure the integrity of the evaluation, please note the
 | `--output_model` | *(Stage dependent)* | The filename for your newly trained weights. |
 | `--epochs` | `20` | Number of training iterations. |
 
----
+
 
 📁 **Note on Data Directories:** The `data_for_train` directory provided in our Google Drive contains three specific sub-datasets. Ensure that the `--data_dir` argument points to the correct folder for each training stage:
 
