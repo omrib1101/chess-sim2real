@@ -107,11 +107,22 @@ Synthetic data generation scripts rely on Blender's internal Python environment
 These dependencies are **not required** for training or inference.
 
 ---
+# Data
+
+The training datasets (synthetic and real chessboard images) are not included in this
+repository due to size constraints (~300MB) and course data distribution policies.
+
+The data was provided as part of the course materials and generated using the provided
+Blender-based synthetic data generation pipeline.
+
+Pretrained model checkpoints are provided and are sufficient for reproducing the reported
+results and running inference.
+
 
 ## Training
 
 The training pipeline is structured into three sequential stages to bridge the sim-to-real gap.
-> 💡 **Dataset Prerequisite:** Before starting the training process, ensure you have downloaded the dataset from the provided Google Drive link and extracted it locally. Please refer to the [Dataset Setup](#dataset-setup) section for download links and instructions on how to organize the folders.
+> 💡 **Dataset Prerequisite:** Before starting the training process, ensure you have downloaded the dataset from the provided Google Drive link and extracted it locally. 
 
 Each script is designed to be standalone: if the required base model is missing from your local `/checkpoints` folder, the script will **automatically download** our official version from GitHub Releases.
 
