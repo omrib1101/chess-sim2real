@@ -16,7 +16,7 @@ from tqdm import tqdm
 # 1. DATASET CLASS
 # ==========================================
 class ChessMultiTaskDataset(Dataset):
-    """
+"""
     Custom Dataset to map folder names to 3 labels:
     Is_Empty, Color, and Piece_Type.
     Expected structure:
@@ -28,7 +28,7 @@ class ChessMultiTaskDataset(Dataset):
                 ...
             validation/
                 ...
-    """
+"""
     def __init__(self, root_dir, transform=None):
         self.root_dir = root_dir
         self.transform = transform
